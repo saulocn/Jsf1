@@ -21,6 +21,7 @@ public class LivroBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Livro livro = new Livro();
+	private Integer livroId;
 
 	private Integer autorId;
 
@@ -28,12 +29,26 @@ public class LivroBean implements Serializable {
 		this.autorId = autorId;
 	}
 
+	public void setLivroId(Integer livroId) {
+		this.livroId = livroId;
+	}
+
 	public Integer getAutorId() {
 		return autorId;
+	}
+	
+	
+
+	public Integer getLivroId() {
+		return livroId;
 	}
 
 	public Livro getLivro() {
 		return livro;
+	}
+
+	public void setLivro(Livro livro) {
+		this.livro = livro;
 	}
 
 	public List<Livro> getLivros() {
@@ -46,6 +61,10 @@ public class LivroBean implements Serializable {
 
 	public List<Autor> getAutoresDoLivro() {
 		return this.livro.getAutores();
+	}
+
+	public void carregaLivroPeloId() {
+		this.livro = new DAO<Livro>(Livro.class).buscaPorId(livroId);
 	}
 
 	public void gravarAutor() {
@@ -62,10 +81,23 @@ public class LivroBean implements Serializable {
 					new FacesMessage("Livro deve ter pelo menos um Autor."));
 			return;
 		}
-
-		new DAO<Livro>(Livro.class).adiciona(this.livro);
+		if (livro.getId() == null) {
+			new DAO<Livro>(Livro.class).adiciona(this.livro);
+		} else {
+			new DAO<Livro>(Livro.class).atualiza(this.livro);
+		}
 
 		this.livro = new Livro();
+	}
+
+	public void remover(Livro livro) {
+		System.out.println("Removendo Livro");
+		new DAO<Livro>(Livro.class).remove(livro);
+	}
+
+	public void editar(Livro livro) {
+		System.out.println("Editando Livro");
+		this.livro = livro;
 	}
 
 	public String formAutor() {
@@ -73,13 +105,15 @@ public class LivroBean implements Serializable {
 		return "autor?faces-redirect=true";
 	}
 
-	public void comecaComDigitoUm(FacesContext fc, UIComponent component,
-			Object value) throws ValidatorException {
+	public void removerAutorDoLivro(Autor autor) {
+		this.livro.removeAutor(autor);
+	}
+
+	public void comecaComDigitoUm(FacesContext fc, UIComponent component, Object value) throws ValidatorException {
 
 		String valor = value.toString();
 		if (!valor.startsWith("1")) {
-			throw new ValidatorException(new FacesMessage(
-					"ISBN deveria começar com 1"));
+			throw new ValidatorException(new FacesMessage("ISBN deveria começar com 1"));
 		}
 
 	}
