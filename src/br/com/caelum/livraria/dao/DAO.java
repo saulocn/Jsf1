@@ -1,9 +1,13 @@
 package br.com.caelum.livraria.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.com.caelum.livraria.modelo.Parametro;
@@ -116,16 +120,19 @@ public class DAO<T> {
 
 	public List<T> listaTodosPaginada(int inicio, int quantidade, List<Parametro> parametros) {
 		EntityManager em = new JPAUtil().getEntityManager();
-		CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classe);
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<T> query = criteriaBuilder.createQuery(classe);
 		Root<T> root = query.from(classe);
+		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		for (Parametro parametro : parametros) {
 			System.out.println(parametro);
+			Expression<String> path = criteriaBuilder.upper(root.get(parametro.getColuna()).as(String.class));
 			if (parametro.getValor() != null && !parametro.getValor().equals("")) {
-				query = query.where(em.getCriteriaBuilder().like(root.<String> get(parametro.getColuna()),
-						parametro.getValor() + "%"));
+				predicates.add(criteriaBuilder.like(path, "%" + parametro.getValor() + "%"));
 			}
 		}
+		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
 
 		List<T> lista = em.createQuery(query).setFirstResult(inicio).setMaxResults(quantidade).getResultList();
 
