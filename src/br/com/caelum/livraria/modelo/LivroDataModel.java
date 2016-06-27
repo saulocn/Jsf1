@@ -1,5 +1,6 @@
 package br.com.caelum.livraria.modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,18 @@ public class LivroDataModel extends LazyDataModel<Livro> {
 	@Override
 	public List<Livro> load(int inicio, int quantidade, String sortField, SortOrder sortOrder,
 			Map<String, Object> filtros) {
+		List<Parametro> parametros = new ArrayList<Parametro>();
+
 		String titulo = (String) filtros.get("titulo");
-		return new DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, "titulo", titulo);
+		String genero = (String) filtros.get("genero");
+		
+		if(titulo!=null){
+			parametros.add(new Parametro("titulo", titulo));
+		}
+		
+		if(genero!=null){
+			parametros.add(new Parametro("genero", genero));
+		}
+		return new DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, parametros);
 	}
 }

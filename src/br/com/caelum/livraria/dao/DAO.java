@@ -6,6 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import br.com.caelum.livraria.modelo.Parametro;
+
 public class DAO<T> {
 
 	private final Class<T> classe;
@@ -81,7 +83,7 @@ public class DAO<T> {
 	public List<T> listaTodosPaginada(int firstResult, int maxResults) {
 		EntityManager em = new JPAUtil().getEntityManager();
 		CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classe);
-		
+
 		query.select(query.from(classe));
 
 		List<T> lista = em.createQuery(query).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
@@ -89,19 +91,19 @@ public class DAO<T> {
 		em.close();
 		return lista;
 	}
-	
+
 	public List<T> listaTodosPaginada(int firstResult, int maxResults, String coluna, String valor) {
-	    EntityManager em = new JPAUtil().getEntityManager();
-	    CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classe);
-	    Root<T> root = query.from(classe);
+		EntityManager em = new JPAUtil().getEntityManager();
+		CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classe);
+		Root<T> root = query.from(classe);
 
-	    if(valor != null)
-	        query = query.where(em.getCriteriaBuilder().like(root.<String>get(coluna), valor + "%"));
+		if (valor != null)
+			query = query.where(em.getCriteriaBuilder().like(root.<String> get(coluna), valor + "%"));
 
-	    List<T> lista = em.createQuery(query).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+		List<T> lista = em.createQuery(query).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
 
-	    em.close();
-	    return lista;
+		em.close();
+		return lista;
 	}
 
 	public int quantidadeDeElementos() {
@@ -110,6 +112,25 @@ public class DAO<T> {
 		em.close();
 
 		return (int) result;
+	}
+
+	public List<T> listaTodosPaginada(int inicio, int quantidade, List<Parametro> parametros) {
+		EntityManager em = new JPAUtil().getEntityManager();
+		CriteriaQuery<T> query = em.getCriteriaBuilder().createQuery(classe);
+		Root<T> root = query.from(classe);
+
+		for (Parametro parametro : parametros) {
+			System.out.println(parametro);
+			if (parametro.getValor() != null && !parametro.getValor().equals("")) {
+				query = query.where(em.getCriteriaBuilder().like(root.<String> get(parametro.getColuna()),
+						parametro.getValor() + "%"));
+			}
+		}
+
+		List<T> lista = em.createQuery(query).setFirstResult(inicio).setMaxResults(quantidade).getResultList();
+
+		em.close();
+		return lista;
 	}
 
 }
