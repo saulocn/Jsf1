@@ -13,7 +13,10 @@ import br.com.caelum.livraria.modelo.Autor;
 public class AutorBean {
 
 	private Autor autor = new Autor();
+	
 	private Integer autorId;
+	
+	
 
 	public Integer getAutorId() {
 		return autorId;
@@ -22,42 +25,39 @@ public class AutorBean {
 	public void setAutorId(Integer autorId) {
 		this.autorId = autorId;
 	}
-
-	public Autor getAutor() {
-		return autor;
-	}
-
-	public void setAutor(Autor autor) {
-		this.autor = autor;
-	}
-
-	public void carregaAutorPeloId() {
-			this.autor = new DAO<Autor>(Autor.class).buscaPorId(autorId);
+	
+	public void carregarAutorPelaId() {
+		this.autor = new DAO<Autor>(Autor.class).buscaPorId(autorId);
 	}
 
 	public String gravar() {
 		System.out.println("Gravando autor " + this.autor.getNome());
 
-		if (this.autor.getId() == null) {
+		if(this.autor.getId() == null) {
 			new DAO<Autor>(Autor.class).adiciona(this.autor);
 		} else {
-			new DAO<Autor>(Autor.class).atualiza(autor);
+			new DAO<Autor>(Autor.class).atualiza(this.autor);
 		}
 
 		this.autor = new Autor();
 
-		return "autor?faces-redirect=true";
+		return "livro?faces-redirect=true";
 	}
-
+	
+	public void remover(Autor autor) {
+		System.out.println("Removendo autor " + autor.getNome());
+		new DAO<Autor>(Autor.class).remove(autor);
+	}
+	
 	public List<Autor> getAutores() {
 		return new DAO<Autor>(Autor.class).listaTodos();
 	}
-
-	public void remover(Autor autor) {
-		new DAO<Autor>(Autor.class).remove(autor);
+	
+	public Autor getAutor() {
+		return autor;
 	}
 
-	public void editar(Autor autor) {
+	public void setAutor(Autor autor) {
 		this.autor = autor;
 	}
 }

@@ -8,24 +8,24 @@ import br.com.caelum.livraria.modelo.Usuario;
 
 public class UsuarioDao {
 
-	public Boolean existe(Usuario usuario) {
-		Boolean existe = false;
+	public boolean existe(Usuario usuario) {
+		
 		EntityManager em = new JPAUtil().getEntityManager();
-		TypedQuery<Usuario> query = em.createQuery("select u from Usuario u where u.login=:pLogin and u.senha=:pSenha",
-				Usuario.class);
+		TypedQuery<Usuario> query = em.createQuery(
+				  " select u from Usuario u "
+				+ " where u.login = :pLogin and u.senha = :pSenha", Usuario.class);
+		
 		query.setParameter("pLogin", usuario.getLogin());
 		query.setParameter("pSenha", usuario.getSenha());
 		try {
-			Usuario result = query.getSingleResult();
-			if (result != null) {
-				existe = true;
-			}
-		} catch (NoResultException e) {
-			existe = false;
+			Usuario resultado =  query.getSingleResult();
+		} catch (NoResultException ex) {
+			return false;
 		}
-		System.out.println("Existe>>>>" + existe);
+		
 		em.close();
-
-		return existe;
+		
+		return true;
 	}
+
 }

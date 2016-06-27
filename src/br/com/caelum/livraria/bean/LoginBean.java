@@ -1,11 +1,10 @@
 package br.com.caelum.livraria.bean;
 
-import java.util.Map;
+import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 
 import br.com.caelum.livraria.dao.UsuarioDao;
@@ -13,43 +12,37 @@ import br.com.caelum.livraria.modelo.Usuario;
 
 @ManagedBean
 @ViewScoped
-public class LoginBean {
+public class LoginBean implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2039182637211948417L;
 	private Usuario usuario = new Usuario();
 
 	public Usuario getUsuario() {
 		return usuario;
 	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
-	public Map<String, Object> getAtributos() {
-		HtmlInputText inputText = new HtmlInputText();
-		Map<String, Object> atributos = inputText.getPassThroughAttributes();
-		atributos.put("type", "email");
-		atributos.put("placeholder", "Entre com seu email");
-		return atributos;
-	}
-
-	public String efetuarLogin() {
-		System.out.println("Efetuar Login! - " + this.usuario.getLogin());
+	
+	public String efetuaLogin() {
+		System.out.println("fazendo login do usuario " + this.usuario.getLogin());
+		
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (new UsuarioDao().existe(this.usuario)) {
-			context.getExternalContext().getSessionMap().put("usuario", usuario);
+		boolean existe = new UsuarioDao().existe(this.usuario);
+		if(existe ) {
+			context.getExternalContext().getSessionMap().put("usuarioLogado", this.usuario);
 			return "livro?faces-redirect=true";
-		} else {
-			//context.addMessage("login:email", new FacesMessage("Login e/ou Senha Inválida!"));
-			context.getExternalContext().getFlash().setKeepMessages(true);
-			context.addMessage(null, new FacesMessage("Login e/ou Senha Inválida!"));
-			return "login?faces-redirect=true";
 		}
+		
+		context.getExternalContext().getFlash().setKeepMessages(true);
+		context.addMessage(null, new FacesMessage("Usuário não encontrado"));
+		
+		return "login?faces-redirect=true";
 	}
 	
-	public String logout(){
+	public String deslogar() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getSessionMap().remove("usuario");
+		context.getExternalContext().getSessionMap().remove("usuarioLogado");
 		return "login?faces-redirect=true";
 	}
 }
