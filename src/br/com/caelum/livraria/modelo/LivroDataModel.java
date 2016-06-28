@@ -43,6 +43,6 @@ public class LivroDataModel extends LazyDataModel<Livro> {
 		if(genero!=null){
 			parametros.add(new Parametro("genero", genero));
 		}
-		return new DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, parametros);
+		return new DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, parametros, sortField, sortOrder);
 	}
 }

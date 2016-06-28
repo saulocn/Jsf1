@@ -10,6 +10,8 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.primefaces.model.SortOrder;
+
 import br.com.caelum.livraria.modelo.Parametro;
 
 public class DAO<T> {
@@ -118,7 +120,8 @@ public class DAO<T> {
 		return (int) result;
 	}
 
-	public List<T> listaTodosPaginada(int inicio, int quantidade, List<Parametro> parametros) {
+	public List<T> listaTodosPaginada(int inicio, int quantidade, List<Parametro> parametros, String sortField,
+			SortOrder sortOrder) {
 		EntityManager em = new JPAUtil().getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<T> query = criteriaBuilder.createQuery(classe);
@@ -132,7 +135,16 @@ public class DAO<T> {
 				predicates.add(criteriaBuilder.like(path, "%" + parametro.getValor() + "%"));
 			}
 		}
+		System.out.println(sortField);
+
 		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+		if (sortField != null && !sortField.equals("null") ) {
+			if (sortOrder.equals(SortOrder.ASCENDING)) {
+				query.orderBy(criteriaBuilder.asc(root.get(sortField)));
+			} else if (sortOrder.equals(SortOrder.DESCENDING)) {
+				query.orderBy(criteriaBuilder.desc(root.get(sortField)));
+			}
+		}
 
 		List<T> lista = em.createQuery(query).setFirstResult(inicio).setMaxResults(quantidade).getResultList();
 
