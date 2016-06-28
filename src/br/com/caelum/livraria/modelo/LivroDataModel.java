@@ -4,30 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import br.com.caelum.livraria.dao.DAO;
+import br.com.caelum.livraria.dao.LivroDao;
 
+
+@RequestScoped
 public class LivroDataModel extends LazyDataModel<Livro> {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2036840763021827679L;
 
-	public LivroDataModel() {
-		System.out.println(new DAO<Livro>(Livro.class).quantidadeDeElementos());
-		super.setRowCount(new DAO<Livro>(Livro.class).quantidadeDeElementos());
-	}
+	@Inject
+	private LivroDao livroDao;
 
-	/*
-	 * @Override public List<Livro> load(int inicio, int quantidade, S
-	 * sentidoOrdenacao, Map<String, Object> filtros) { String titulo = (String)
-	 * filtros.get("titulo"); return new
-	 * DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, "titulo",
-	 * titulo); }
-	 */
+	@PostConstruct
+	void init() {
+		super.setRowCount(this.livroDao.quantidadeDeElementos());
+	}
+	
 	@Override
 	public List<Livro> load(int inicio, int quantidade, String sortField, SortOrder sortOrder,
 			Map<String, Object> filtros) {
@@ -35,14 +36,14 @@ public class LivroDataModel extends LazyDataModel<Livro> {
 
 		String titulo = (String) filtros.get("titulo");
 		String genero = (String) filtros.get("genero");
-		
-		if(titulo!=null){
+
+		if (titulo != null) {
 			parametros.add(new Parametro("titulo", titulo));
 		}
-		
-		if(genero!=null){
+
+		if (genero != null) {
 			parametros.add(new Parametro("genero", genero));
 		}
-		return new DAO<Livro>(Livro.class).listaTodosPaginada(inicio, quantidade, parametros, sortField, sortOrder);
+		return this.livroDao.listaTodosPaginada(inicio, quantidade, parametros, sortField, sortOrder);
 	}
 }
