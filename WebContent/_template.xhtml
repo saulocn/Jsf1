@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 	<h:head />
@@ -10,12 +11,25 @@
 		<div id="cabecalho">
 			<h:graphicImage library="img" name="logo.png" />
 			
-			<h:form rendered="#{usuarioLogado != null}">
-				Olá, #{usuarioLogado.login}!<h:commandLink value="Logout" action="#{loginBean.deslogar}"/>
-			</h:form>
+			    <p:growl id="messages" showDetail="true" autoUpdate="true"/> 
+				<h:form  rendered="#{usuarioLogado != null}">
+					
+					Olá, #{usuarioLogado.login}!
+				 
+				    <p:menuButton value="Menu">
+				        <p:menuitem value="Livro" action="livro" icon="fa fa-book"/>
+				        <p:menuitem value="Autores" action="autor" icon="fa fa-user"/>
+				        <p:separator />
+				        <p:menuitem value="Logout" action="#{loginBean.deslogar}"  icon="fa fa-sign-out"/>
+				    </p:menuButton>
+				    
+				    
+				    
+				</h:form>
 			
 			<h1>
 				<ui:insert name="titulo"></ui:insert>
+
 			</h1>
 		</div>
 	
