@@ -1,13 +1,19 @@
 package br.com.caelum.livraria.bean;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
-@ManagedBean
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
+@Named
 @SessionScoped
-public class TemaBean {
+public class TemaBean implements Serializable {
 
-	private String tema = "vader";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2871493857147685220L;
+	private String tema = "afterdark";
 
 	public String getTema() {
 		return tema;
@@ -22,7 +28,7 @@ public class TemaBean {
 				"bootstrap", "casablanca", "cupertino", "cruze", "dark-hive", "delta", "dot-luv", "eggplant",
 				"excite-bike", "flick", "glass-x", "home", "hot-sneaks", "humanity", "le-frog", "midnight", "mint-choc",
 				"overcast", "pepper-grinder", "redmond", "rocket", "sam", "smoothness", "south-street", "start",
-				"sunny", "swanky-purse", "trontastic", "ui-darkness", "ui-lightness", "vader" };	
+				"sunny", "swanky-purse", "trontastic", "ui-darkness", "ui-lightness", "vader" };
 	}
 
 }
