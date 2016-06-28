@@ -15,13 +15,19 @@
 				<h:form  rendered="#{usuarioLogado != null}">
 					
 					Olá, #{usuarioLogado.login}!
-				 
-				    <p:menuButton value="Menu">
-				        <p:menuitem value="Livro" action="livro" icon="fa fa-book"/>
-				        <p:menuitem value="Autores" action="autor" icon="fa fa-user"/>
-				        <p:separator />
-				        <p:menuitem value="Logout" action="#{loginBean.deslogar}"  icon="fa fa-sign-out"/>
-				    </p:menuButton>
+				 	
+				 	
+				 	<p:menu toggleable="true">
+					    <p:submenu label="Cadastros">
+					        <p:menuitem value="Livros" action="livro?faces-redirect=true"  icon="fa fa-fw fa fa-book" />
+					        <p:menuitem value="Autor" action="autor?faces-redirect=true"  icon="fa fa-fw fa-user" />
+					    </p:submenu>
+					    <p:submenu label="Outros">
+					        <p:menuitem value="Logout" action="#{loginBean.deslogar}" icon="fa fa-fw fa-sign-out"/>
+					    </p:submenu>
+					</p:menu>
+					
+				
 				    
 				    
 				    
