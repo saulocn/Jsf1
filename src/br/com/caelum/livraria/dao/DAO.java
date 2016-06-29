@@ -25,33 +25,17 @@ public class DAO<T> {
 	}
 
 	public void adiciona(T t) {
-
-		// abre transacao
-		em.getTransaction().begin();
-
 		// persiste o objeto
 		em.persist(t);
-
-		// commita a transacao
-		em.getTransaction().commit();
-
-		// fecha a entity manager
 	}
 
 	public void remove(T t) {
-		em.getTransaction().begin();
-
 		em.remove(em.merge(t));
 
-		em.getTransaction().commit();
 	}
 
 	public void atualiza(T t) {
-		em.getTransaction().begin();
-
 		em.merge(t);
-
-		em.getTransaction().commit();
 	}
 
 	public List<T> listaTodos() {
@@ -119,7 +103,7 @@ public class DAO<T> {
 		System.out.println(sortField);
 
 		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
-		if (sortField != null && !sortField.equals("null") ) {
+		if (sortField != null && !sortField.equals("null")) {
 			if (sortOrder.equals(SortOrder.ASCENDING)) {
 				query.orderBy(criteriaBuilder.asc(root.get(sortField)));
 			} else if (sortOrder.equals(SortOrder.DESCENDING)) {
