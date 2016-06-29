@@ -11,8 +11,9 @@
 		<div id="cabecalho">
 			<h:panelGrid columns="3">
 			<h:graphicImage library="img" name="logo.png" />
-				Olá, #{usuarioLogado.login}!
 				<h:form  rendered="#{usuarioLogado != null}" style="position:absolute; right:10px;">
+				
+				Olá, #{usuarioLogado.login}!
 					<p:themeSwitcher id="basic" style="width:165px" value="#{temaBean.tema}">
 			            <f:selectItem itemLabel="Choose Theme" itemValue="" />
 			            <f:selectItems value="#{temaBean.temas}" var="tema" itemLabel="#{tema}" itemValue="#{tema}"/>
@@ -34,7 +35,7 @@
 					    </p:submenu>
 					    
 					    <p:submenu label="Gráficos">
-					        <p:menuitem value="Vendas" action="vendas" icon="fa fa-fw fa-line-chart"/>
+					        <p:menuitem value="Vendas" action="vendas?faces-redirect=true" icon="fa fa-fw fa-line-chart"/>
 					    </p:submenu>
 					
 					     <p:submenu label="Outros">
